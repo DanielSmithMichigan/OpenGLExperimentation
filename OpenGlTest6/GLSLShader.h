@@ -17,7 +17,7 @@ namespace GLSLShader {
 		VERTEX, FRAGMENT, GEOMETRY, TESS_CONTROL, TESS_EVALUATION
 	};
 };
-
+//
 class GLSLProgram {
 	private:
 		int handle;
