@@ -33,6 +33,7 @@ Shader::Shader(GLenum shaderType, char* fileName, GLuint programHandle)
 {
 	this->shaderType = shaderType;
 	this->fileName = fileName;
+	init(shaderType);
 	load(programHandle);
 }
 
@@ -67,13 +68,13 @@ GLuint Shader::load(GLuint programHandle)
 		{
 			char * log = (char *)malloc(logLen);
 			GLsizei written;
-			glGetShaderInfoLog(shader, logLen, &written, log);
+			glGetShaderInfoLog(this->shader, logLen, &written, log);
 			Error::showError("Shader log:\n%s", false);
 			Error::showError(log, true);
 			free(log);
 		}
 	}
-	glAttachShader(programHandle, shader);
+	glAttachShader(programHandle, this->shader);
 	return shader;
 }
 

@@ -22,6 +22,7 @@ class Game {
 	private:
 		void loadShaders();
 		void linkProgram();
+		void initGlew();
 		GLuint getProgramHandle();
 		GLuint programHandle;
 	public:
@@ -29,14 +30,23 @@ class Game {
 };
 
 Game::Game() {
-	glewInit();
 	Window* myWindow = new Window(800, 600, "Ya did it harry");
+	initGlew();
 	getProgramHandle();
 	loadShaders();
-	linkProgram();
 	Component* components[1] = { new Component(this->programHandle) };
+	linkProgram();
 	myWindow->render(components, 1);
 	myWindow->destroy();
+}
+
+void Game::initGlew() {
+	GLint GlewInitResult = glewInit();
+	if (GLEW_OK != GlewInitResult)
+	{
+		printf("ERROR: %s\n", glewGetErrorString(GlewInitResult));
+		exit(EXIT_FAILURE);
+	}
 }
 
 void Game::loadShaders() {
