@@ -4,10 +4,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "Error.h"
+#include "Component.h"
 
 using namespace std;
-
-typedef void(*callback_function)(void); // type for conciseness
 
 class Window {
 	private:
@@ -20,7 +19,7 @@ class Window {
 		static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	public:
 		Window(int width, int height, char* title);
-		void render(callback_function renderFunc);
+		void render(Component* components[], int length);
 		void destroy();
 };
 
@@ -46,13 +45,15 @@ void Window::init() {
 	glfwSetKeyCallback(window, Window::keyCallback);
 }
 
-void Window::render(callback_function renderFunc) {
+void Window::render(Component* components[], int length) {
 
 	while (!glfwWindowShouldClose(window))
 	{
 		glViewport(0, 0, this->width, this->height);
 		glClear(GL_COLOR_BUFFER_BIT);
-		renderFunc();
+		for (int i = 0; i < length; i++) {
+			components[i]->Draw();
+		}
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

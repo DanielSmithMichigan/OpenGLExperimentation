@@ -24,8 +24,6 @@ class Game {
 		void linkProgram();
 		GLuint getProgramHandle();
 		GLuint programHandle;
-		static void render();
-		static Component* triangle;
 	public:
 		Game();
 };
@@ -35,15 +33,10 @@ Game::Game() {
 	Window* myWindow = new Window(800, 600, "Ya did it harry");
 	getProgramHandle();
 	loadShaders();
-	Component* tri = new Component(this->programHandle);
-	triangle = tri;
 	linkProgram();
-	myWindow->render(render);
+	Component* components[1] = { new Component(this->programHandle) };
+	myWindow->render(components, 1);
 	myWindow->destroy();
-}
-
-void Game::render() {
-	triangle->Draw();
 }
 
 void Game::loadShaders() {

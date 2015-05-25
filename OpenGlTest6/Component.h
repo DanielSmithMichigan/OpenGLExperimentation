@@ -1,3 +1,5 @@
+#ifndef COMPONENT_HEADER
+#define COMPONENT_HEADER
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -85,3 +87,5 @@ void Component::Draw() {
 
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 }
+
+#endif
