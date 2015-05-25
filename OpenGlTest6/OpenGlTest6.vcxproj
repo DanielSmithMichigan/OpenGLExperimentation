@@ -88,7 +88,11 @@
     <None Include="shader.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GLSLShader.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="Error.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
