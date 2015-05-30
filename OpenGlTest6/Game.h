@@ -10,34 +10,59 @@
 #include "Error.h"
 #include "Component.h"
 #include "Window.h"
+#include <vector>
 using glm::mat3;
 using glm::mat4;
 using glm::vec3;
 using glm::vec4;
 #include <glm/gtc/matrix_transform.hpp>
+#include "ProgramHandle.h"
 
 using namespace std;
 
 class Game {
 	private:
+		void init();
 		void loadShaders();
 		void linkProgram();
 		void initGlew();
+		void initializeComponents();
 		GLuint getProgramHandle();
-		GLuint programHandle;
 	public:
+		void run();
+		void addComponent(Component* component);
+		vector<Component*> components;
+		Window* window;
 		Game();
 };
 
 Game::Game() {
-	Window* myWindow = new Window(800, 600, "Ya did it harry");
+	init();
+}
+
+void Game::addComponent(Component* component) {
+	components.push_back(component);
+}
+
+void Game::init() {
+	window = new Window(800, 600, "Ya did it harry");
 	initGlew();
 	getProgramHandle();
 	loadShaders();
-	Component* components[1] = { new Component(this->programHandle) };
+}
+
+void Game::run() {
 	linkProgram();
-	myWindow->render(components, 1);
-	myWindow->destroy();
+	initializeComponents();
+	window->render(components);
+	window->destroy();
+}
+
+void Game::initializeComponents() {
+	for (Component* component : components)
+	{
+		component->Initialize();
+	}
 }
 
 void Game::initGlew() {
@@ -50,8 +75,11 @@ void Game::initGlew() {
 }
 
 void Game::loadShaders() {
-	Shader* vertexShader = new Shader(GL_VERTEX_SHADER, "shader.vert", this->programHandle);
-	Shader* fragmentShader = new Shader(GL_FRAGMENT_SHADER, "shader.frag", this->programHandle);
+	GLuint programHandle = ProgramHandle::getProgramHandle();
+	Shader* vertexShader = new Shader(GL_VERTEX_SHADER, "shader.vert", programHandle);
+	Shader* fragmentShader = new Shader(GL_FRAGMENT_SHADER, "shader.frag", programHandle);
+	glBindAttribLocation(programHandle, 0, "VertexPosition");
+	glBindAttribLocation(programHandle, 1, "VertexColor");
 }
 
 GLuint Game::getProgramHandle() {
@@ -61,7 +89,7 @@ GLuint Game::getProgramHandle() {
 		Error::showError("Error creating program object.\n", true);
 		return NULL;
 	} else {
-		this->programHandle = pHandle;
+		ProgramHandle::setProgramHandle(pHandle);
 		return pHandle;
 	}
 }
@@ -69,25 +97,26 @@ GLuint Game::getProgramHandle() {
 
 
 void Game::linkProgram() {
-	glLinkProgram(this->programHandle);
+	GLuint programHandle = ProgramHandle::getProgramHandle();
+	glLinkProgram(programHandle);
 
 	GLint status;
-	glGetProgramiv(this->programHandle, GL_LINK_STATUS, &status);
+	glGetProgramiv(programHandle, GL_LINK_STATUS, &status);
 	if (GL_FALSE == status) {
 		Error::showError("Failed to link shader program!\n", false);
 		GLint logLen;
-		glGetProgramiv(this->programHandle, GL_INFO_LOG_LENGTH, &logLen);
+		glGetProgramiv(programHandle, GL_INFO_LOG_LENGTH, &logLen);
 		if (logLen > 0)
 		{
 			char * log = (char *)malloc(logLen);
 			GLsizei written;
-			glGetProgramInfoLog(this->programHandle, logLen, &written, log);
+			glGetProgramInfoLog(programHandle, logLen, &written, log);
 			Error::showError("Program log: \n%s", true);
 			free(log);
 		}
 	}
 	else
 	{
-		glUseProgram(this->programHandle);
+		glUseProgram(programHandle);
 	}
 }

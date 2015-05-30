@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "Error.h"
 #include "Component.h"
+#include <vector>
 
 using namespace std;
 
@@ -21,7 +22,7 @@ class Window {
 		void setSwapInterval();
 	public:
 		Window(int width, int height, char* title);
-		void render(Component* components[], int length);
+		void render(vector<Component*> components);
 		void destroy();
 };
 
@@ -51,13 +52,14 @@ void Window::init() {
 	glfwSetKeyCallback(window, Window::keyCallback);	
 }
 
-void Window::render(Component* components[], int length) {
+void Window::render(vector<Component*> components) {
 	while (!glfwWindowShouldClose(window))
 	{
 		glViewport(0, 0, this->width, this->height);
 		glClear(GL_COLOR_BUFFER_BIT);
-		for (int i = 0; i < length; i++) {
-			components[i]->Draw();
+		for (Component* component : components)
+		{
+			component->Draw();
 		}
 		glfwSwapBuffers(window);
 		glfwPollEvents();

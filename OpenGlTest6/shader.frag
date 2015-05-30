@@ -1,7 +1,13 @@
 #version 400
-in vec3 Color;
-out vec4 FragColor;
 
-void main() {
-	FragColor = vec4(Color, 1.0);
+in VS_OUTPUT
+{
+	vec4 Color;
+} IN;
+
+out vec4 Color;
+
+void main()
+{
+	Color = IN.Color;
 }

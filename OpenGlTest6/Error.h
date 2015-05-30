@@ -23,7 +23,7 @@ void Error::showError(const char* description) {
 void Error::showError(const char* description, bool endProgram) {
 	fputs(description, stderr);
 	if (endProgram) {
-		exit(1);
+		//exit(1);
 	}
 }
 

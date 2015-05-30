@@ -88,10 +88,14 @@
     <None Include="shader.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Colors.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Error.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="ProgramHandle.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="TriangleComponent.h" />
+    <ClInclude Include="VertexObjects.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
