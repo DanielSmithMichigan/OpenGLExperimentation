@@ -1,6 +1,6 @@
 #include <iostream>
 #include "Game.h"
-#include "TriangleComponent.h"
+#include "CubeComponent.h"
 #include <cstdio>
 
 using namespace std;
@@ -8,7 +8,7 @@ using namespace std;
 int main(void)
 {
 	Game* game = new Game();
-	TriangleComponent* component = new TriangleComponent();
+	CubeComponent* component = new CubeComponent();
 	game->addComponent(component);
 	game->run();
 	std::getchar();

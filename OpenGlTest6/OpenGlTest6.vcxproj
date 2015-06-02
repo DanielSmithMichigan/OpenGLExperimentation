@@ -88,8 +88,10 @@
     <None Include="shader.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="CubeComponent.h" />
     <ClInclude Include="Error.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="ProgramHandle.h" />

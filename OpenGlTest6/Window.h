@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "Error.h"
 #include "Component.h"
+#include "Colors.h"
 #include <vector>
 
 using namespace std;
@@ -53,10 +54,13 @@ void Window::init() {
 }
 
 void Window::render(vector<Component*> components) {
+	static const GLfloat one = 1.0f;
+
 	while (!glfwWindowShouldClose(window))
 	{
 		glViewport(0, 0, this->width, this->height);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClearBufferfv(GL_COLOR, 0, &Colors::Black[0]);
+		glClearBufferfv(GL_DEPTH, 0, &one);
 		for (Component* component : components)
 		{
 			component->Draw();
