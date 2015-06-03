@@ -10,15 +10,17 @@ using glm::vec4;
 #include "VertexObjects.h"
 #include "Colors.h"
 #include "ProgramHandle.h"
+#include "Camera.h"
 
 using namespace std;
 
 class Component{
 	public:
-		virtual void Draw() = 0;
+		virtual void Draw(Camera* camera) = 0;
 		virtual void Initialize() = 0;
 		Component();
 	private:
+	protected:
 };
 
 Component::Component() {

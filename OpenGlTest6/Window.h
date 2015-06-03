@@ -7,6 +7,7 @@
 #include "Component.h"
 #include "Colors.h"
 #include <vector>
+#include "Camera.h"
 
 using namespace std;
 
@@ -21,13 +22,14 @@ class Window {
 		char* title;
 		static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 		void setSwapInterval();
+		Camera* camera;
 	public:
 		Window(int width, int height, char* title);
 		void render(vector<Component*> components);
 		void destroy();
 };
 
-Window::Window(int width, int height, char* title)
+Window::Window(int width, int height, char* title) : camera(new Camera)
 {
 	this->width = width;
 	this->height = height;
@@ -63,7 +65,7 @@ void Window::render(vector<Component*> components) {
 		glClearBufferfv(GL_DEPTH, 0, &one);
 		for (Component* component : components)
 		{
-			component->Draw();
+			component->Draw(camera);
 		}
 		glfwSwapBuffers(window);
 		glfwPollEvents();

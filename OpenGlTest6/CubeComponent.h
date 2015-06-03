@@ -5,7 +5,7 @@ class CubeComponent : public Component {
 public:
 	CubeComponent();
 	void Initialize();
-	void Draw();
+	void Draw(Camera* camera);
 private:
 	GLuint mVertexBuffer;
 	GLuint mVertexArrayObject;
@@ -76,19 +76,19 @@ void CubeComponent::Initialize() {
 
 	glBindVertexArray(0);
 
-	mWorldViewProjectionLocation = glGetUniformLocation(ProgramHandle::getProgramHandle());
+	mWorldViewProjectionLocation = glGetUniformLocation(ProgramHandle::getProgramHandle(), "WorldViewProjection");
 	if (mWorldViewProjectionLocation == -1) 
 	{
 		Error::showError("Cannot find mWorldViewProjection Uniform", true);
 	}
 }
 
-void CubeComponent::Draw() {
+void CubeComponent::Draw(Camera* camera) {
 	glBindVertexArray(mVertexArrayObject);
 	glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer);
 	glUseProgram(ProgramHandle::getProgramHandle());
-	mat4 wvp = mCamera->ViewProjectionMatrix() * mWorldMatrix;
+	mat4 wvp = camera->getWorldToViewMatrix() * mWorldMatrix;
 	glUniformMatrix4fv(mWorldViewProjectionLocation, 1, GL_FALSE, &wvp[0][0]);
 
 	glEnable(GL_CULL_FACE);

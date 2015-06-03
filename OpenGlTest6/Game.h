@@ -94,8 +94,6 @@ GLuint Game::getProgramHandle() {
 	}
 }
 
-
-
 void Game::linkProgram() {
 	GLuint programHandle = ProgramHandle::getProgramHandle();
 	glLinkProgram(programHandle);
