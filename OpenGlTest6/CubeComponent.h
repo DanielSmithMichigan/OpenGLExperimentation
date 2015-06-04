@@ -11,6 +11,7 @@ private:
 	GLuint mVertexArrayObject;
 	GLuint mIndexBuffer;
 	GLint mWorldViewProjectionLocation;
+	GLint projectionMatrixLocation;
 	glm::mat4 mWorldMatrix;
 };
 
@@ -81,6 +82,12 @@ void CubeComponent::Initialize() {
 	{
 		Error::showError("Cannot find mWorldViewProjection Uniform", true);
 	}
+
+	projectionMatrixLocation = glGetUniformLocation(ProgramHandle::getProgramHandle(), "ProjectionMatrix");
+	if (projectionMatrixLocation == -1)
+	{
+		Error::showError("Cannot find projectMatrix Uniform", true);
+	}
 }
 
 void CubeComponent::Draw(Camera* camera) {
@@ -90,6 +97,7 @@ void CubeComponent::Draw(Camera* camera) {
 	glUseProgram(ProgramHandle::getProgramHandle());
 	mat4 wvp = camera->getWorldToViewMatrix() * mWorldMatrix;
 	glUniformMatrix4fv(mWorldViewProjectionLocation, 1, GL_FALSE, &wvp[0][0]);
+	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &camera->projectionMatrix[0][0]);
 
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);

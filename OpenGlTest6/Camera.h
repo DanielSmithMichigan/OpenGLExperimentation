@@ -13,6 +13,7 @@ class Camera {
 	public:
 		Camera();
 		glm::mat4 getWorldToViewMatrix() const;
+		glm::mat4 projectionMatrix;
 	private:
 		glm::vec3 position;
 		glm::vec3 viewDirection;
@@ -21,10 +22,15 @@ class Camera {
 
 Camera::Camera() 
 	: position(0.0f, 0.0f, 0.0f),
-	viewDirection(0.0f, 0.0f, -1.0f),
+	viewDirection(1.0f, 0.0f, 0.0f),
 	up(0.0f, 1.0f, 0.0f)
 {
-
+	projectionMatrix = glm::mat4(
+		vec4(1, 0, 0, 2),
+		vec4(0, 1, 0, -5),
+		vec4(0, 0, 1, 9),
+		vec4(0, 0, 0, 1)
+	);
 }
 
 glm::mat4 Camera::getWorldToViewMatrix() const
