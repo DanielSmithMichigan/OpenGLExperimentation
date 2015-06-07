@@ -26,16 +26,16 @@ void CubeComponent::Initialize() {
 	};
 	VertexPositionColor vertices[] = {
 		VertexPositionColor(vec4(1.0f, 1.0f, 1.0f, 1.0f), Colors::Red),
-		VertexPositionColor(vec4(1.0f, 1.0f, -1.0f, 1.0f), Colors::Red),
+		VertexPositionColor(vec4(1.0f, 1.0f, 0.0f, 1.0f), Colors::Red),
 
-		VertexPositionColor(vec4(1.0f, -1.0f, 1.0f, 1.0f), Colors::Blue),
-		VertexPositionColor(vec4(1.0f, -1.0f, -1.0f, 1.0f), Colors::Blue),
+		VertexPositionColor(vec4(1.0f, 0.0f, 1.0f, 1.0f), Colors::Blue),
+		VertexPositionColor(vec4(1.0f, 0.0f, 0.0f, 1.0f), Colors::Blue),
 
-		VertexPositionColor(vec4(-1.0f, 1.0f, 1.0f, 1.0f), Colors::Green),
-		VertexPositionColor(vec4(-1.0f, 1.0f, -1.0f, 1.0f), Colors::Green),
+		VertexPositionColor(vec4(0.0f, 1.0f, 1.0f, 1.0f), Colors::Green),
+		VertexPositionColor(vec4(0.0f, 1.0f, 0.0f, 1.0f), Colors::Green),
 
-		VertexPositionColor(vec4(-1.0f, -1.0f, 1.0f, 1.0f), Colors::Red),
-		VertexPositionColor(vec4(-1.0f, -1.0f, -1.0f, 1.0f), Colors::Red)
+		VertexPositionColor(vec4(0.0f, 0.0f, 1.0f, 1.0f), Colors::Red),
+		VertexPositionColor(vec4(0.0f, 0.0f, 0.0f, 1.0f), Colors::Red)
 	};
 
 	glGenBuffers(1, &mVertexBuffer);
@@ -100,7 +100,7 @@ void CubeComponent::Draw(Camera* camera) {
 	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &camera->projectionMatrix[0][0]);
 
 	glEnable(GL_CULL_FACE);
-	glFrontFace(GL_CCW);
+	glFrontFace(GL_CW);
 
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);

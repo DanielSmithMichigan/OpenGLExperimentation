@@ -22,6 +22,8 @@ class Window {
 		char* title;
 		static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 		void setSwapInterval();
+		void handleKeypress();
+		int keysToCheck[6];
 		Camera* camera;
 	public:
 		Window(int width, int height, char* title);
@@ -31,6 +33,12 @@ class Window {
 
 Window::Window(int width, int height, char* title) : camera(new Camera)
 {
+	keysToCheck[0] = GLFW_KEY_W;
+	keysToCheck[1] = GLFW_KEY_A;
+	keysToCheck[2] = GLFW_KEY_S;
+	keysToCheck[3] = GLFW_KEY_D;
+	keysToCheck[4] = GLFW_KEY_UP;
+	keysToCheck[5] = GLFW_KEY_DOWN;
 	this->width = width;
 	this->height = height;
 	this->title = title;
@@ -60,6 +68,7 @@ void Window::render(vector<Component*> components) {
 
 	while (!glfwWindowShouldClose(window))
 	{
+		handleKeypress();
 		glViewport(0, 0, this->width, this->height);
 		glClearBufferfv(GL_COLOR, 0, &Colors::Black[0]);
 		glClearBufferfv(GL_DEPTH, 0, &one);
@@ -84,6 +93,14 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, GL_TRUE);
+	}
+}
+
+void Window::handleKeypress() {
+	for (int i = 0; i < 6; i++) {
+		if (glfwGetKey(window, keysToCheck[i]) == 1) {
+			camera->handleKeypress(keysToCheck[i]);
+		}
 	}
 }
 
