@@ -52,13 +52,13 @@ void Camera::handleMouseMovement(double offsetX, double offsetY) {
 	phi += mouseSpeed * offsetY;
 	double x = sin(phi) * cos(theta);
 	double y = cos(phi);
-	double z = sin(theta) * sin(phi);
+	double z = sin(phi) * sin(theta);
 	viewDirection = vec3(x, y, z);
 }
 
 void Camera::updateProjectionMatrix()
 {
-	projectionMatrix = glm::perspective(45.0f, 0.75f, 0.01f, 1000.0f);
+	projectionMatrix = glm::perspective(fieldOfView, aspectRatio, nearField, farField);
 }
 
 void Camera::handleKeypress(int keypress) {
