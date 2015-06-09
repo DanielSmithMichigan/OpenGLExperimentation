@@ -21,8 +21,11 @@ class Camera {
 	private:
 		glm::vec3 position;
 		glm::vec3 viewDirection;
-		void updateProjectionMatrix();
 		const glm::vec3 up;
+		glm::vec3 right;
+		void updateProjectionMatrix();
+		void getViewDirection();
+		void getRight();
 		double mouseSpeed; // degrees per pixel
 		double theta;
 		double phi;
@@ -30,13 +33,16 @@ class Camera {
 		double aspectRatio;
 		double nearField;
 		double farField;
+		float moveSpeed;
 };
 
 Camera::Camera(int width, int height)
 	: position(2.0f, 0.0f, 0.0f),
 	viewDirection(1.0f, 0.0f, 0.0f),
 	up(0.0f, 1.0f, 0.0f),
+	right(0.0f, 0.0f, 0.0f),
 	mouseSpeed(0.005f),
+	moveSpeed(0.005f),
 	theta(0),
 	phi(0),
 	fieldOfView(45.0f),
@@ -50,10 +56,23 @@ Camera::Camera(int width, int height)
 void Camera::handleMouseMovement(double offsetX, double offsetY) {
 	theta += mouseSpeed * offsetX;
 	phi += mouseSpeed * offsetY;
+	getViewDirection();
+	getRight();
+}
+
+void Camera::getViewDirection() {
 	double x = sin(phi) * cos(theta);
 	double y = cos(phi);
 	double z = sin(phi) * sin(theta);
-	viewDirection = vec3(x, y, z);
+	viewDirection = vec3(x, y, z);// Right vector
+}
+
+void Camera::getRight() {
+	right = glm::vec3(
+		cos(theta - 3.14f / 2.0f),
+		0,
+		sin(theta - 3.14f / 2.0f)
+	);
 }
 
 void Camera::updateProjectionMatrix()
@@ -62,23 +81,17 @@ void Camera::updateProjectionMatrix()
 }
 
 void Camera::handleKeypress(int keypress) {
-	if (keypress == GLFW_KEY_UP) {
-		position += vec3(0.0f, 0.005f, 0.0f);
-	}
-	if (keypress == GLFW_KEY_DOWN) {
-		position += vec3(0.0f, -0.005f, 0.0f);
-	}
 	if (keypress == GLFW_KEY_W) {
-		position += vec3(-0.005f, 0.0f, 0.0f);
+		position += viewDirection * moveSpeed;
 	}
 	if (keypress == GLFW_KEY_S) {
-		position += vec3(0.005f, 0.0f, 0.0f);
+		position -= viewDirection * moveSpeed;
 	}
 	if (keypress == GLFW_KEY_A) {
-		position += vec3(0.0f, 0.0f, -0.005f);
+		position += right * moveSpeed;
 	}
 	if (keypress == GLFW_KEY_D) {
-		position += vec3(0.0f, 0.0f, 0.005f);
+		position -= right * moveSpeed;
 	}
 }
 
