@@ -9,36 +9,56 @@ using glm::vec4;
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
 #include <GLFW/glfw3.h>
+#include <math.h>
 
 class Camera {
 	public:
-		Camera();
+		Camera(int width, int height);
 		glm::mat4 getWorldToViewMatrix() const;
 		glm::mat4 projectionMatrix;
 		void handleKeypress(int keypress);
+		void handleMouseMovement(double offsetX, double offsetY);
 	private:
 		glm::vec3 position;
 		glm::vec3 viewDirection;
 		void updateProjectionMatrix();
 		const glm::vec3 up;
+		double mouseSpeed; // degrees per pixel
+		double theta;
+		double phi;
+		double fieldOfView;
+		double aspectRatio;
+		double nearField;
+		double farField;
 };
 
-Camera::Camera() 
+Camera::Camera(int width, int height)
 	: position(2.0f, 0.0f, 0.0f),
 	viewDirection(1.0f, 0.0f, 0.0f),
-	up(0.0f, 1.0f, 0.0f)
+	up(0.0f, 1.0f, 0.0f),
+	mouseSpeed(0.005f),
+	theta(0),
+	phi(0),
+	fieldOfView(45.0f),
+	nearField(0.1f),
+	farField(1000.0f)
 {
-	projectionMatrix = glm::mat4(
-		vec4(1, 0, 0, 1),
-		vec4(0, 1, 0, 0.0f),
-		vec4(0, 0, 1, 1),
-		vec4(0, 0, 0, 1)
-	);
+	aspectRatio = double(width) / double(height);
+	updateProjectionMatrix();
+}
+
+void Camera::handleMouseMovement(double offsetX, double offsetY) {
+	theta += mouseSpeed * offsetX;
+	phi += mouseSpeed * offsetY;
+	double x = sin(phi) * cos(theta);
+	double y = cos(phi);
+	double z = sin(theta) * sin(phi);
+	viewDirection = vec3(x, y, z);
 }
 
 void Camera::updateProjectionMatrix()
 {
-	//projectionMatrix = glm::perspective(mFieldOfView, mAspectRatio, mNearPlaneDistance, mFarPlaneDistance);
+	projectionMatrix = glm::perspective(45.0f, 0.75f, 0.01f, 1000.0f);
 }
 
 void Camera::handleKeypress(int keypress) {

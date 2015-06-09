@@ -23,6 +23,8 @@ class Window {
 		static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 		void setSwapInterval();
 		void handleKeypress();
+		void disableMouse();
+		void handleMouseMovement();
 		int keysToCheck[6];
 		Camera* camera;
 	public:
@@ -31,8 +33,9 @@ class Window {
 		void destroy();
 };
 
-Window::Window(int width, int height, char* title) : camera(new Camera)
+Window::Window(int width, int height, char* title)
 {
+	camera = new Camera(width, height);
 	keysToCheck[0] = GLFW_KEY_W;
 	keysToCheck[1] = GLFW_KEY_A;
 	keysToCheck[2] = GLFW_KEY_S;
@@ -43,6 +46,7 @@ Window::Window(int width, int height, char* title) : camera(new Camera)
 	this->height = height;
 	this->title = title;
 	init();
+	disableMouse();
 	select();
 	setSwapInterval();
 }
@@ -63,12 +67,25 @@ void Window::init() {
 	glfwSetKeyCallback(window, Window::keyCallback);	
 }
 
+void Window::disableMouse(){
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPos(window, 0.0, 0.0);
+};
+
+void Window::handleMouseMovement() {
+	double offsetX, offsetY;
+	glfwGetCursorPos(window, &offsetX, &offsetY);
+	camera->handleMouseMovement(offsetX, offsetY);
+	glfwSetCursorPos(window, 0.0, 0.0);
+}
+
 void Window::render(vector<Component*> components) {
 	static const GLfloat one = 1.0f;
 
 	while (!glfwWindowShouldClose(window))
 	{
 		handleKeypress();
+		handleMouseMovement();
 		glViewport(0, 0, this->width, this->height);
 		glClearBufferfv(GL_COLOR, 0, &Colors::Black[0]);
 		glClearBufferfv(GL_DEPTH, 0, &one);
