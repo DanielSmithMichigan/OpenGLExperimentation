@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Game.h"
+#include "Model.h"
 #include "CubeComponent.h"
 #include <cstdio>
 #include <chrono>
@@ -11,8 +12,8 @@ int main(void)
 {
 	std::this_thread::sleep_for(std::chrono::seconds(3));
 	Game* game = new Game();
-	CubeComponent* component = new CubeComponent();
-	game->addComponent(component);
+	Model* model = new Model("Assets/sphere.dae");
+	model->pushMeshesTo(game->components);
 	game->run();
 	std::getchar();
 }
