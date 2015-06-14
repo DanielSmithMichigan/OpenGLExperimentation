@@ -99,6 +99,8 @@ void CubeComponent::Draw(Camera* camera) {
 	glUniformMatrix4fv(mWorldViewProjectionLocation, 1, GL_FALSE, &wvp[0][0]);
 	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &camera->projectionMatrix[0][0]);
 
+	glEnable(GL_DEPTH_TEST);
+
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
 

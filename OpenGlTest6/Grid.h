@@ -1,21 +1,21 @@
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 #include <vector>
 #include "Component.h"
 #include "Error.h"
 using namespace std;
 
-class Mesh : public Component {
+class Grid : public Component {
 public:
-	Mesh(aiMesh &mesh);
+	Grid(int numRows, int widthRow);
 	void Initialize();
 	void Draw(Camera* camera);
 private:
-	std::vector<VertexPositionColor> vertices;
+	void createBuffers();
+	void createGrid();
+	int numDivisions;
+	int numVertices;
+	int width;
+	VertexPositionColor *vertices;
 	std::vector<int> indices;
-	int indexCount;
-	void Mesh::createBuffers();
 	GLuint vertexBuffer;
 	GLuint indexBuffer;
 	GLuint vertexArrayObject;
@@ -24,26 +24,46 @@ private:
 	glm::mat4 mWorldMatrix;
 };
 
-Mesh::Mesh(aiMesh &mesh) : indexBuffer(0), vertexBuffer(0), vertexArrayObject(0) {
-	for (unsigned int i = 0; i < mesh.mNumVertices; i++) {
-		aiVector3D v = mesh.mVertices[i];
-		vertices.push_back(VertexPositionColor(vec4(v.x, v.y, v.z, 1.0f), Colors::Random()));
-	}
-	if (mesh.HasFaces()) {
-		for (unsigned int i = 0; i < mesh.mNumFaces; i++) {
-			aiFace* face = &mesh.mFaces[i];
-			for (unsigned int j = 0; j < face->mNumIndices; j++) {
-				indices.push_back(face->mIndices[j]);
-			}
-		}
-	}
+Grid::Grid(int numDivisions, int width) : indexBuffer(0), vertexBuffer(0), vertexArrayObject(0), numDivisions(numDivisions), width(width) {
+
 }
 
-void Mesh::Initialize() {
+void Grid::Initialize() {
+	createGrid();
 	createBuffers();
 }
 
-void Mesh::createBuffers() {
+void Grid::createGrid() {
+	numVertices = (numDivisions + 1) * 4;
+	vertices = new VertexPositionColor[numVertices];
+	float left = (float)width / 2;
+	float increment = (float)width / (float)numDivisions;
+	for (int i = 0; i < numVertices; i += 4) {
+		vertices[i] = VertexPositionColor(vec4(
+			left, 
+			0.0f,
+			left - (i * increment / 4),
+			1.0f), Colors::Red);
+		vertices[i + 1] = VertexPositionColor(vec4(
+			-1 * left,
+			0.0f,
+			left - (i * increment / 4),
+			1.0f), Colors::Red);
+
+		vertices[i + 2] = VertexPositionColor(vec4(
+			left - (i * increment / 4),
+			0.0f,
+			left,
+			1.0f), Colors::Red);
+		vertices[i + 3] = VertexPositionColor(vec4(
+			left - (i * increment / 4),
+			0.0f,
+			-1 * left,
+			1.0f), Colors::Red);
+	}
+}
+
+void Grid::createBuffers() {
 	enum VertexAttribute
 	{
 		vertexAttributePosition,
@@ -52,11 +72,7 @@ void Mesh::createBuffers() {
 
 	glGenBuffers(1, &vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(VertexPositionColor) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
-
-	glGenBuffers(1, &indexBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices) * indices.size(), &indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(VertexPositionColor) * numVertices, &vertices[0], GL_STATIC_DRAW);
 
 	glGenVertexArrays(1, &vertexArrayObject);
 	glBindVertexArray(vertexArrayObject);
@@ -82,20 +98,19 @@ void Mesh::createBuffers() {
 	}
 }
 
-void Mesh::Draw(Camera* camera) {
+void Grid::Draw(Camera* camera) {
 	glBindVertexArray(vertexArrayObject);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+
 	glUseProgram(ProgramHandle::getProgramHandle());
 	mat4 wvp = camera->getWorldToViewMatrix() * mWorldMatrix;
 	glUniformMatrix4fv(worldViewProjectionLocation, 1, GL_FALSE, &wvp[0][0]);
 	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &camera->projectionMatrix[0][0]);
 
 	glEnable(GL_DEPTH_TEST);
-
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
 
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawArrays(GL_LINES, 0, numVertices);
 	glBindVertexArray(0);
 }
