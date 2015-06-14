@@ -8,7 +8,7 @@
 class Model {
 	public:
 		Model(char* fileName);
-		void pushMeshesTo(std::vector<Component*> components);
+		void pushMeshesTo(std::vector<Component*> &components);
 	private:
 		std::vector<Mesh*> meshes;
 };
@@ -22,13 +22,13 @@ Model::Model(char* fileName) {
 	}
 	if (scene->HasMeshes()) {
 		for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
-			Mesh* mesh = new Mesh(scene->mMeshes[i]);
+			Mesh* mesh = new Mesh(*(scene->mMeshes[i]));
 			meshes.push_back(mesh);
 		}
 	} 
 }
 
-void Model::pushMeshesTo(std::vector<Component*> components) {
+void Model::pushMeshesTo(std::vector<Component*> &components) {
 	for (Mesh* mesh : meshes)
 	{
 		components.push_back(mesh);

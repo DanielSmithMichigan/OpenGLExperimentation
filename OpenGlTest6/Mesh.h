@@ -8,12 +8,11 @@ using namespace std;
 
 class Mesh : public Component {
 public:
-	Mesh(aiMesh *mesh);
+	Mesh(aiMesh &mesh);
 	void Initialize();
 	void Draw(Camera* camera);
 private:
-	aiMesh *mesh;
-	std::vector<glm::vec3> vertices;
+	std::vector<VertexPositionColor> vertices;
 	std::vector<int> indices;
 	int indexCount;
 	void Mesh::createBuffers();
@@ -25,27 +24,27 @@ private:
 	glm::mat4 mWorldMatrix;
 };
 
-Mesh::Mesh(aiMesh *mesh) : mesh(mesh), indexBuffer(0), vertexBuffer(0), vertexArrayObject(0) {
-}
-
-void Mesh::Initialize() {
-	vertices.reserve(mesh->mNumVertices);
-	for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
-		aiVector3D v = mesh->mVertices[i];
-		vertices.push_back(glm::vec3(v.x, v.y, v.z));
+Mesh::Mesh(aiMesh &mesh) : indexBuffer(0), vertexBuffer(0), vertexArrayObject(0) {
+	for (unsigned int i = 0; i < mesh.mNumVertices; i++) {
+		aiVector3D v = mesh.mVertices[i];
+		vertices.push_back(VertexPositionColor(vec4(v.x, v.y, v.z, 1.0f), Colors::Red));
 	}
-	if (mesh->HasFaces()) {
-		for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
-			aiFace* face = &mesh->mFaces[i];
+	if (mesh.HasFaces()) {
+		for (unsigned int i = 0; i < mesh.mNumFaces; i++) {
+			aiFace* face = &mesh.mFaces[i];
 			for (unsigned int j = 0; j < face->mNumIndices; j++) {
 				indices.push_back(face->mIndices[j]);
 			}
 		}
 	}
+}
+
+void Mesh::Initialize() {
 	createBuffers();
 }
 
 void Mesh::createBuffers() {
+	cout << "HELLOOO";
 	enum VertexAttribute
 	{
 		vertexAttributePosition,
