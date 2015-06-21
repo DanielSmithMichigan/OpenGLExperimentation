@@ -17,10 +17,10 @@ int main(void)
 	Game* game = new Game();
 	Model* model = new Model("Assets/sphere.dae");
 	model->pushMeshesTo(game->components);
-	CubeComponent* cube = new CubeComponent();
-	game->components.push_back(cube);
-	Grid* grid = new Grid(10, 10);
-	game->components.push_back(grid);
+	//CubeComponent* cube = new CubeComponent();
+	//game->components.push_back(cube);
+	//Grid* grid = new Grid(10, 10);
+	//game->components.push_back(grid);
 	game->run();
 	std::getchar();
 }

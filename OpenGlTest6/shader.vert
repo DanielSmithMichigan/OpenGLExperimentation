@@ -4,16 +4,15 @@ uniform mat4 WorldViewProjection;
 uniform mat4 ProjectionMatrix;
 
 in vec4 Position;
-in vec4 Color;
+in vec2 TextureCoordinate;
 
 out VS_OUTPUT
 {
-	vec4 Color;
+	vec2 TextureCoordinate;
 } OUT;
 
 void main()
 {	
 	gl_Position = ProjectionMatrix * WorldViewProjection * Position;
-	OUT.Color = Color;
+	OUT.TextureCoordinate = TextureCoordinate;
 }
-
