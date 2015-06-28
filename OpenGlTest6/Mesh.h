@@ -5,6 +5,7 @@
 #include "Component.h"
 #include "Error.h"
 #include <Soil.h>
+#include "Light.h"
 using namespace std;
 
 class Mesh : public Component {
@@ -25,7 +26,9 @@ private:
 	GLuint samplerState;
 	GLint worldViewProjectionLocation;
 	GLint projectionMatrixLocation;
+	GLint ambientColorLocation;
 	glm::mat4 mWorldMatrix;
+	Light* ambientLight;
 };
 
 Mesh::Mesh(aiMesh &mesh) : indexBuffer(0), vertexBuffer(0), vertexArrayObject(0), samplerState(0) {
@@ -94,12 +97,20 @@ void Mesh::createBuffers() {
 		Error::showError("Cannot find projectMatrix Uniform", true);
 	}
 
+	ambientColorLocation = glGetUniformLocation(ProgramHandle::getProgramHandle(), "AmbientColor");
+	if (ambientColorLocation == -1)
+	{
+		Error::showError("Cannot find projectMatrix Uniform", true);
+	}
+
 	glGenSamplers(1, &samplerState);
 	glSamplerParameteri(samplerState, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glSamplerParameteri(samplerState, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glSamplerParameteri(samplerState, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glSamplerParameteri(samplerState, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glSamplerParameterf(samplerState, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
+
+	ambientLight = new Light();
 }
 
 void Mesh::Draw(Camera* camera) {
@@ -113,6 +124,7 @@ void Mesh::Draw(Camera* camera) {
 	mat4 wvp = camera->getWorldToViewMatrix() * mWorldMatrix;
 	glUniformMatrix4fv(worldViewProjectionLocation, 1, GL_FALSE, &wvp[0][0]);
 	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &camera->projectionMatrix[0][0]);
+	glUniform4fv(ambientColorLocation, 1, &ambientLight->color[0]);
 
 	glEnable(GL_DEPTH_TEST);
 
