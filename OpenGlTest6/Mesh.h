@@ -22,12 +22,13 @@ private:
 	GLuint indexBuffer;
 	GLuint vertexArrayObject;
 	GLuint texture;
+	GLuint samplerState;
 	GLint worldViewProjectionLocation;
 	GLint projectionMatrixLocation;
 	glm::mat4 mWorldMatrix;
 };
 
-Mesh::Mesh(aiMesh &mesh) : indexBuffer(0), vertexBuffer(0), vertexArrayObject(0) {
+Mesh::Mesh(aiMesh &mesh) : indexBuffer(0), vertexBuffer(0), vertexArrayObject(0), samplerState(0) {
 	aiVector3D *textureCoordinates = mesh.mTextureCoords[0];
 	for (unsigned int i = 0; i < mesh.mNumVertices; i++) {
 		aiVector3D v = mesh.mVertices[i];
@@ -92,6 +93,13 @@ void Mesh::createBuffers() {
 	{
 		Error::showError("Cannot find projectMatrix Uniform", true);
 	}
+
+	glGenSamplers(1, &samplerState);
+	glSamplerParameteri(samplerState, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glSamplerParameteri(samplerState, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glSamplerParameteri(samplerState, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glSamplerParameteri(samplerState, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glSamplerParameterf(samplerState, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
 }
 
 void Mesh::Draw(Camera* camera) {
@@ -99,6 +107,7 @@ void Mesh::Draw(Camera* camera) {
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 	glBindTexture(GL_TEXTURE_2D, texture);
+	glBindSampler(0, samplerState);
 
 	glUseProgram(ProgramHandle::getProgramHandle());
 	mat4 wvp = camera->getWorldToViewMatrix() * mWorldMatrix;
