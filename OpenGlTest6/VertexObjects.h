@@ -14,12 +14,13 @@ public:
 		: Position(position), Color(color) { }
 };
 
-class VertexPositionTexture
+class VertexPositionTextureNormal
 {
 public:
 	glm::vec4 Position;
 	glm::vec2 TextureCoordinates;
-	VertexPositionTexture() {};
-	VertexPositionTexture(const glm::vec4& position, const glm::vec2& textureCoordinates)
-		: Position(position), TextureCoordinates(textureCoordinates) {}
+	glm::vec3 Normal;
+	VertexPositionTextureNormal() {};
+	VertexPositionTextureNormal(const glm::vec4& position, const glm::vec2& textureCoordinates, const glm::vec3& normal)
+		: Position(position), TextureCoordinates(textureCoordinates) , Normal(normal){}
 };

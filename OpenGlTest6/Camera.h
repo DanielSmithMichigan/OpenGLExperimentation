@@ -43,8 +43,8 @@ Camera::Camera(int width, int height)
 	right(0.0f, 0.0f, 0.0f),
 	mouseSpeed(0.005f),
 	moveSpeed(0.005f),
-	theta(0),
-	phi(0),
+	theta(3.105),
+	phi(1.58),
 	fieldOfView(45.0f),
 	nearField(0.1f),
 	farField(1000.0f)
@@ -58,6 +58,10 @@ void Camera::handleMouseMovement(double offsetX, double offsetY) {
 	phi += mouseSpeed * offsetY;
 	getViewDirection();
 	getRight();
+
+	cout << "PHI: " << phi << endl
+		<< "THETA: " << theta << endl
+		<< "Z: " << viewDirection.z << endl;
 }
 
 void Camera::getViewDirection() {

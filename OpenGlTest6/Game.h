@@ -27,6 +27,8 @@ class Game {
 		void linkProgram();
 		void initGlew();
 		void initializeComponents();
+		int GAME_WIDTH = 800;
+		int GAME_HEIGHT = 600;
 		GLuint getProgramHandle();
 	public:
 		void run();
@@ -45,7 +47,8 @@ void Game::addComponent(Component* component) {
 }
 
 void Game::init() {
-	window = new Window(800, 600, "Ya did it harry");
+	GlobalGameObjects *objects = new GlobalGameObjects(GAME_WIDTH, GAME_HEIGHT);
+	window = new Window(GAME_WIDTH, GAME_HEIGHT, "Ya did it harry", objects);
 	initGlew();
 	getProgramHandle();
 	loadShaders();

@@ -1,7 +1,6 @@
 #include <iostream>
 #include "Game.h"
 #include "Model.h"
-#include "CubeComponent.h"
 #include "Grid.h"
 #include <cstdio>
 #include <chrono>

@@ -1,13 +1,13 @@
 #include <vector>
-#include "Component.h"
-#include "Error.h"
+#include "DrawableGameComponent.h"
 using namespace std;
 
-class Grid : public Component {
+class Grid : public DrawableGameComponent {
 public:
 	Grid(int numRows, int widthRow);
 	void Initialize();
-	void Draw(Camera* camera);
+	void Draw(GlobalGameObjects* objects);
+	void Update();
 private:
 	void createBuffers();
 	void createGrid();
@@ -98,14 +98,18 @@ void Grid::createBuffers() {
 	}
 }
 
-void Grid::Draw(Camera* camera) {
+void Grid::Update() {
+
+}
+
+void Grid::Draw(GlobalGameObjects* objects) {
 	glBindVertexArray(vertexArrayObject);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 
 	glUseProgram(ProgramHandle::getProgramHandle());
-	mat4 wvp = camera->getWorldToViewMatrix() * mWorldMatrix;
+	mat4 wvp = objects->camera->getWorldToViewMatrix() * mWorldMatrix;
 	glUniformMatrix4fv(worldViewProjectionLocation, 1, GL_FALSE, &wvp[0][0]);
-	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &camera->projectionMatrix[0][0]);
+	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &objects->camera->projectionMatrix[0][0]);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);

@@ -92,16 +92,16 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="Component.h" />
-    <ClInclude Include="CubeComponent.h" />
+    <ClInclude Include="DrawableGameComponent.h" />
     <ClInclude Include="Error.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GlobalGameObjects.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ProgramHandle.h" />
     <ClInclude Include="Shader.h" />
-    <ClInclude Include="TriangleComponent.h" />
     <ClInclude Include="VertexObjects.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>

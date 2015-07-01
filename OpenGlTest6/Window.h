@@ -4,10 +4,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "Error.h"
-#include "Component.h"
+#include "DrawableGameComponent.h"
 #include "Colors.h"
 #include <vector>
-#include "Camera.h"
 
 using namespace std;
 
@@ -26,16 +25,16 @@ class Window {
 		void disableMouse();
 		void handleMouseMovement();
 		int keysToCheck[6];
-		Camera* camera;
+		GlobalGameObjects *objects;
 	public:
-		Window(int width, int height, char* title);
+		Window(int width, int height, char* title, GlobalGameObjects *objects);
 		void render(vector<Component*> components);
 		void destroy();
 };
 
-Window::Window(int width, int height, char* title)
+Window::Window(int width, int height, char* title, GlobalGameObjects *objects)
+	: objects(objects)
 {
-	camera = new Camera(width, height);
 	keysToCheck[0] = GLFW_KEY_W;
 	keysToCheck[1] = GLFW_KEY_A;
 	keysToCheck[2] = GLFW_KEY_S;
@@ -75,7 +74,7 @@ void Window::disableMouse(){
 void Window::handleMouseMovement() {
 	double offsetX, offsetY;
 	glfwGetCursorPos(window, &offsetX, &offsetY);
-	camera->handleMouseMovement(offsetX, offsetY);
+	objects->camera->handleMouseMovement(offsetX, offsetY);
 	glfwSetCursorPos(window, 0.0, 0.0);
 }
 
@@ -91,7 +90,10 @@ void Window::render(vector<Component*> components) {
 		glClearBufferfv(GL_DEPTH, 0, &one);
 		for (Component* component : components)
 		{
-			component->Draw(camera);
+			DrawableGameComponent* drawableGameComponent = dynamic_cast<DrawableGameComponent*>(component);
+			if (drawableGameComponent != nullptr) {
+				drawableGameComponent->Draw(objects);
+			}
 		}
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -116,7 +118,7 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 void Window::handleKeypress() {
 	for (int i = 0; i < 6; i++) {
 		if (glfwGetKey(window, keysToCheck[i]) == 1) {
-			camera->handleKeypress(keysToCheck[i]);
+			objects->camera->handleKeypress(keysToCheck[i]);
 		}
 	}
 }
