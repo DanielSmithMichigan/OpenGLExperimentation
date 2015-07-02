@@ -23,6 +23,6 @@ void main()
 	vec3 ambient = sampledColor.rgb * AmbientColor.rgb;
 	vec3 diffuse = clamp(LightColor.rgb * n_dot_l * sampledColor.rgb, 0.0f, 1.0f);
 
-	Color.rgb = ambient * diffuse;
+	Color.rgb = ambient + diffuse;
 	Color.a = sampledColor.a;
 }

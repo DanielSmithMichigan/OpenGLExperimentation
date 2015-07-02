@@ -21,7 +21,7 @@ private:
 
 Light::Light()
 {
-	color = vec4(0.5f, 0.5f, 0.5f, 1.0f);
+	color = vec4(0.3f, 0.3f, 0.3f, 1.0f);
 	direction = vec3(-1.0f, 0.0f, 0.0f);
 	up = vec3(0.0f, 0.0f, 0.0f);
 	right = vec3(0.0f, 0.0f, 0.0f);

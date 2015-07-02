@@ -21,11 +21,12 @@ class Camera {
 	private:
 		glm::vec3 position;
 		glm::vec3 viewDirection;
-		const glm::vec3 up;
+		glm::vec3 up;
 		glm::vec3 right;
 		void updateProjectionMatrix();
 		void getViewDirection();
 		void getRight();
+		void getUp();
 		double mouseSpeed; // degrees per pixel
 		double theta;
 		double phi;
@@ -34,6 +35,7 @@ class Camera {
 		double nearField;
 		double farField;
 		float moveSpeed;
+		int count = 0;
 };
 
 Camera::Camera(int width, int height)
@@ -58,10 +60,7 @@ void Camera::handleMouseMovement(double offsetX, double offsetY) {
 	phi += mouseSpeed * offsetY;
 	getViewDirection();
 	getRight();
-
-	cout << "PHI: " << phi << endl
-		<< "THETA: " << theta << endl
-		<< "Z: " << viewDirection.z << endl;
+	getUp();
 }
 
 void Camera::getViewDirection() {
@@ -77,6 +76,10 @@ void Camera::getRight() {
 		0,
 		sin(theta - 3.14f / 2.0f)
 	);
+}
+
+void Camera::getUp() {
+	up = glm::cross(viewDirection, right);
 }
 
 void Camera::updateProjectionMatrix()
