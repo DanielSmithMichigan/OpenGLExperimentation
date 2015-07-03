@@ -11,6 +11,7 @@ class OGLVariable {
 		OGLVariable& operator<<(const glm::mat3 &value);
 		OGLVariable& operator<<(const glm::vec4 &value);
 		OGLVariable& operator<<(const glm::vec3 &value);
+		OGLVariable& operator<<(float value);
 		std::string name;
 		GLint location;
 };
@@ -45,5 +46,11 @@ OGLVariable& OGLVariable::operator<<(const glm::vec4 &value)
 OGLVariable& OGLVariable::operator<<(const glm::vec3& value)
 {
 	glUniform3fv(location, 1, &value[0]);
+	return *this;
+}
+
+OGLVariable& OGLVariable::operator<<(float value)
+{
+	glUniform1f(location, value);
 	return *this;
 }

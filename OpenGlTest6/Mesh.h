@@ -30,14 +30,18 @@ private:
 	OGLVariable* ambientColorUniform;
 	OGLVariable* lightColorUniform;
 	OGLVariable* lightDirectionUniform;
+	OGLVariable* cameraPositionUniform;
+	OGLVariable* specularColorUniform;
+	OGLVariable* specularPowerUniform;
 	glm::mat4 position = glm::translate(vec3(0.0f, 0.0f, 0.0f));
 	glm::mat4 scale = glm::scale(vec3(1.0f, 1.0f, 1.0f));
 	glm::mat4 rotate = glm::rotate(0.0f, vec3(1.0f, 0.0f, 0.0f));
 	glm::mat4 worldMatrix;
+	float specularPower;
 	Light* ambientLight;
 };
 
-Mesh::Mesh(aiMesh &mesh) : indexBuffer(0), vertexBuffer(0), vertexArrayObject(0), samplerState(0) {
+Mesh::Mesh(aiMesh &mesh) : indexBuffer(0), vertexBuffer(0), vertexArrayObject(0), samplerState(0), specularPower(40.0f) {
 	worldMatrix = position * scale * rotate;
 	aiVector3D *textureCoordinates = mesh.mTextureCoords[0];
 	for (unsigned int i = 0; i < mesh.mNumVertices; i++) {
@@ -103,6 +107,9 @@ void Mesh::createBuffers() {
 	ambientColorUniform = new OGLVariable("AmbientColor");
 	lightColorUniform = new OGLVariable("LightColor");
 	lightDirectionUniform = new OGLVariable("LightDirection");
+	cameraPositionUniform = new OGLVariable("CameraPosition");
+	specularColorUniform = new OGLVariable("SpecularColor");
+	specularPowerUniform = new OGLVariable("SpecularPower");
 
 	glGenSamplers(1, &samplerState);
 	glSamplerParameteri(samplerState, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -131,6 +138,9 @@ void Mesh::Draw(GlobalGameObjects* objects) {
 	*ambientColorUniform << objects->ambientLight->color;
 	*lightColorUniform << objects->sun->color;
 	*lightDirectionUniform << objects->sun->direction;
+	*cameraPositionUniform << objects->camera->position;
+	*specularColorUniform << objects->sun->color;
+	*specularPowerUniform << specularPower;
 
 	glEnable(GL_DEPTH_TEST);
 

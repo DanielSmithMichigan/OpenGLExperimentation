@@ -16,10 +16,10 @@ class Camera {
 		Camera(int width, int height);
 		glm::mat4 getViewMatrix() const;
 		glm::mat4 projectionMatrix;
+		glm::vec3 position;
 		void handleKeypress(int keypress);
 		void handleMouseMovement(double offsetX, double offsetY);
 	private:
-		glm::vec3 position;
 		glm::vec3 viewDirection;
 		glm::vec3 up;
 		glm::vec3 right;

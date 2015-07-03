@@ -14,12 +14,15 @@ out VS_OUTPUT
 	vec2 TextureCoordinate;
 	vec3 Normal;
 	vec3 LightDirection;
+	vec3 WorldPosition;
 } OUT;
 
 void main()
 {	
-	gl_Position = ProjectionMatrix * ViewMatrix * WorldMatrix * Position;
+	vec4 WorldPosition = WorldMatrix * Position;
+	gl_Position = ProjectionMatrix * ViewMatrix * WorldPosition;
 	OUT.TextureCoordinate = TextureCoordinate;
 	OUT.Normal = (WorldMatrix * vec4(Normal, 0.0f)).xyz;
 	OUT.LightDirection = -LightDirection;
+	OUT.WorldPosition = WorldPosition.xyz;
 }
