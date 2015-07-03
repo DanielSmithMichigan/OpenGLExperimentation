@@ -2,6 +2,7 @@
 #define DRAWABLE_COMPONENT_HEADER
 #include "Component.h"
 #include "GlobalGameObjects.h"
+#include "OGLVariable.h"
 
 using namespace std;
 

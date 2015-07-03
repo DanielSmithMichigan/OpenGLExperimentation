@@ -24,17 +24,21 @@ private:
 	GLuint vertexArrayObject;
 	GLuint texture;
 	GLuint samplerState;
-	GLint worldMatrixLocation;
-	GLint worldViewProjectionLocation;
-	GLint projectionMatrixLocation;
-	GLint ambientColorLocation;
-	GLint lightColorLocation;
-	GLint lightDirectionLocation;
-	glm::mat4 mWorldMatrix;
+	OGLVariable* worldMatrixUniform;
+	OGLVariable* viewMatrixUniform;
+	OGLVariable* projectionMatrixUniform;
+	OGLVariable* ambientColorUniform;
+	OGLVariable* lightColorUniform;
+	OGLVariable* lightDirectionUniform;
+	glm::mat4 position = glm::translate(vec3(0.0f, 0.0f, 0.0f));
+	glm::mat4 scale = glm::scale(vec3(1.0f, 1.0f, 1.0f));
+	glm::mat4 rotate = glm::rotate(0.0f, vec3(1.0f, 0.0f, 0.0f));
+	glm::mat4 worldMatrix;
 	Light* ambientLight;
 };
 
 Mesh::Mesh(aiMesh &mesh) : indexBuffer(0), vertexBuffer(0), vertexArrayObject(0), samplerState(0) {
+	worldMatrix = position * scale * rotate;
 	aiVector3D *textureCoordinates = mesh.mTextureCoords[0];
 	for (unsigned int i = 0; i < mesh.mNumVertices; i++) {
 		aiVector3D v = mesh.mVertices[i];
@@ -93,41 +97,12 @@ void Mesh::createBuffers() {
 
 	glBindVertexArray(0);
 
-	worldViewProjectionLocation = glGetUniformLocation(ProgramHandle::getProgramHandle(), "WorldViewProjection");
-	if (worldViewProjectionLocation == -1)
-	{
-		Error::showError("Cannot find mWorldViewProjection Uniform", true);
-	}
-
-	worldMatrixLocation = glGetUniformLocation(ProgramHandle::getProgramHandle(), "World");
-	if (worldMatrixLocation == -1)
-	{
-		Error::showError("Cannot find World Uniform", true);
-	}
-
-	projectionMatrixLocation = glGetUniformLocation(ProgramHandle::getProgramHandle(), "ProjectionMatrix");
-	if (projectionMatrixLocation == -1)
-	{
-		Error::showError("Cannot find projectMatrix Uniform", true);
-	}
-
-	ambientColorLocation = glGetUniformLocation(ProgramHandle::getProgramHandle(), "AmbientColor");
-	if (ambientColorLocation == -1)
-	{
-		Error::showError("Cannot find ambientColor Uniform", true);
-	}
-
-	lightColorLocation = glGetUniformLocation(ProgramHandle::getProgramHandle(), "LightColor");
-	if (lightColorLocation == -1)
-	{
-		Error::showError("Cannot find lightColor Uniform", true);
-	}
-
-	lightDirectionLocation = glGetUniformLocation(ProgramHandle::getProgramHandle(), "LightDirection");
-	if (lightDirectionLocation == -1)
-	{
-		Error::showError("Cannot find lightDirection Uniform", true);
-	}
+	viewMatrixUniform = new OGLVariable("ViewMatrix");
+	worldMatrixUniform = new OGLVariable("WorldMatrix");
+	projectionMatrixUniform = new OGLVariable("ProjectionMatrix");
+	ambientColorUniform = new OGLVariable("AmbientColor");
+	lightColorUniform = new OGLVariable("LightColor");
+	lightDirectionUniform = new OGLVariable("LightDirection");
 
 	glGenSamplers(1, &samplerState);
 	glSamplerParameteri(samplerState, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -149,13 +124,13 @@ void Mesh::Draw(GlobalGameObjects* objects) {
 	glBindSampler(0, samplerState);
 
 	glUseProgram(ProgramHandle::getProgramHandle());
-	mat4 wvp = objects->camera->getWorldToViewMatrix() * mWorldMatrix;
-	glUniformMatrix4fv(worldViewProjectionLocation, 1, GL_FALSE, &wvp[0][0]);
-	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &objects->camera->projectionMatrix[0][0]);
-	glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, &mWorldMatrix[0][0]);
-	glUniform4fv(ambientColorLocation, 1, &objects->ambientLight->color[0]);
-	glUniform4fv(lightColorLocation, 1, &objects->directionalLight->color[0]);
-	glUniform3fv(lightDirectionLocation, 1, &objects->directionalLight->direction[0]);
+
+	*viewMatrixUniform << objects->camera->getViewMatrix();
+	*projectionMatrixUniform << objects->camera->projectionMatrix;
+	*worldMatrixUniform << worldMatrix;
+	*ambientColorUniform << objects->ambientLight->color;
+	*lightColorUniform << objects->sun->color;
+	*lightDirectionUniform << objects->sun->direction;
 
 	glEnable(GL_DEPTH_TEST);
 

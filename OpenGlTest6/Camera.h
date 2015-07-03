@@ -14,7 +14,7 @@ using glm::vec4;
 class Camera {
 	public:
 		Camera(int width, int height);
-		glm::mat4 getWorldToViewMatrix() const;
+		glm::mat4 getViewMatrix() const;
 		glm::mat4 projectionMatrix;
 		void handleKeypress(int keypress);
 		void handleMouseMovement(double offsetX, double offsetY);
@@ -39,14 +39,14 @@ class Camera {
 };
 
 Camera::Camera(int width, int height)
-	: position(2.0f, 0.0f, 0.0f),
+	: position(0.0f, -3.0f, 0.0f),
 	viewDirection(1.0f, 0.0f, 0.0f),
 	up(0.0f, 1.0f, 0.0f),
 	right(0.0f, 0.0f, 0.0f),
 	mouseSpeed(0.005f),
 	moveSpeed(0.005f),
-	theta(3.105),
-	phi(1.58),
+	theta(0),
+	phi(0),
 	fieldOfView(45.0f),
 	nearField(0.1f),
 	farField(1000.0f)
@@ -102,7 +102,7 @@ void Camera::handleKeypress(int keypress) {
 	}
 }
 
-glm::mat4 Camera::getWorldToViewMatrix() const
+glm::mat4 Camera::getViewMatrix() const
 {
 	return glm::lookAt(position, position + viewDirection, up);
 }

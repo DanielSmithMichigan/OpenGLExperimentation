@@ -3,11 +3,13 @@ using namespace std;
 
 class Light : public Component {
 public:
+	Light(const vec4 &color, const vec3 &direction);
+	Light(const vec4 &color);
 	Light();
 	void Initialize();
 	void Update();
-	glm::vec4 color;
-	glm::vec3 direction;
+	glm::vec4 color = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	glm::vec3 direction = vec3(0.0f, 0.0f, 1.0f);
 private:
 	GLuint mVertexBuffer;
 	GLuint mVertexArrayObject;
@@ -19,13 +21,16 @@ private:
 	glm::mat4 mWorldMatrix;
 };
 
+Light::Light(const vec4 &color, const vec3 &direction)
+	:color(color), direction(direction)
+{}
+
+Light::Light(const vec4 &color)
+	: color(color)
+{}
+
 Light::Light()
-{
-	color = vec4(0.3f, 0.3f, 0.3f, 1.0f);
-	direction = vec3(-1.0f, 0.0f, 0.0f);
-	up = vec3(0.0f, 0.0f, 0.0f);
-	right = vec3(0.0f, 0.0f, 0.0f);
-}
+{}
 
 void Light::Initialize() {
 

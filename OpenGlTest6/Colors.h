@@ -6,18 +6,16 @@
 class Colors
 {
 public:
-	static const glm::vec4 Red;
 	static const glm::vec2 RedInTexture;
-	static const glm::vec4 Green;
-	static const glm::vec4 Blue;
+	static const glm::vec4 Daylight;
+	static const glm::vec4 DimGray;
 	static const glm::vec4 Black;
 	static const glm::vec4 Random();
 };
 
 const glm::vec2 Colors::RedInTexture = glm::vec2(0.0f, 0.0f);
-const glm::vec4 Colors::Red = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-const glm::vec4 Colors::Green = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
-const glm::vec4 Colors::Blue = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+const glm::vec4 Colors::Daylight = glm::vec4(1.0f, float(228) / float(255), float(206) / float(255), 1.0f);
+const glm::vec4 Colors::DimGray = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
 const glm::vec4 Colors::Black = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 const glm::vec4 Colors::Random() {
 	return glm::vec4(

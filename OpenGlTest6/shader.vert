@@ -1,9 +1,9 @@
 #version 400
 
-uniform mat4 WorldViewProjection;
+uniform mat4 ViewMatrix;
 uniform mat4 ProjectionMatrix;
 uniform vec3 LightDirection;
-uniform mat4 World;
+uniform mat4 WorldMatrix;
 
 in vec4 Position;
 in vec2 TextureCoordinate;
@@ -18,8 +18,8 @@ out VS_OUTPUT
 
 void main()
 {	
-	gl_Position = ProjectionMatrix * WorldViewProjection * Position;
+	gl_Position = ProjectionMatrix * ViewMatrix * WorldMatrix * Position;
 	OUT.TextureCoordinate = TextureCoordinate;
-	OUT.Normal = (World * vec4(Normal, 0.0f)).xyz;
+	OUT.Normal = (WorldMatrix * vec4(Normal, 0.0f)).xyz;
 	OUT.LightDirection = -LightDirection;
 }
