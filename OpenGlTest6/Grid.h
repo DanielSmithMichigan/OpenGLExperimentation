@@ -116,12 +116,12 @@ void Grid::createBuffers() {
 
 	glBindVertexArray(0);
 
-	viewMatrixUniform = new OGLVariable("ViewMatrix");
-	worldMatrixUniform = new OGLVariable("WorldMatrix");
-	projectionMatrixUniform = new OGLVariable("ProjectionMatrix");
-	ambientColorUniform = new OGLVariable("AmbientColor");
-	lightColorUniform = new OGLVariable("LightColor");
-	lightDirectionUniform = new OGLVariable("LightDirection");
+	viewMatrixUniform = new OGLVariable("ViewMatrix", programHandle);
+	worldMatrixUniform = new OGLVariable("WorldMatrix", programHandle);
+	projectionMatrixUniform = new OGLVariable("ProjectionMatrix", programHandle);
+	ambientColorUniform = new OGLVariable("AmbientColor", programHandle);
+	lightColorUniform = new OGLVariable("LightColor", programHandle);
+	lightDirectionUniform = new OGLVariable("LightDirection", programHandle);
 
 	glGenSamplers(1, &samplerState);
 	glSamplerParameteri(samplerState, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -140,9 +140,6 @@ void Grid::Draw(GlobalGameObjects* objects) {
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glBindSampler(0, samplerState);
-
-
-	glUseProgram(ProgramHandle::getProgramHandle());
 
 	*viewMatrixUniform << objects->camera->getViewMatrix();
 	*projectionMatrixUniform << objects->camera->projectionMatrix;

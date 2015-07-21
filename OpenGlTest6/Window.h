@@ -92,7 +92,7 @@ void Window::render(vector<Component*> components) {
 		{
 			DrawableGameComponent* drawableGameComponent = dynamic_cast<DrawableGameComponent*>(component);
 			if (drawableGameComponent != nullptr) {
-				drawableGameComponent->Draw(objects);
+				drawableGameComponent->doDraw(objects);
 			}
 		}
 		glfwSwapBuffers(window);

@@ -10,7 +10,6 @@ using glm::vec4;
 #include <glm/gtc/matrix_transform.hpp>
 #include "VertexObjects.h"
 #include "Colors.h"
-#include "ProgramHandle.h"
 #include "Error.h"
 
 using namespace std;
@@ -18,7 +17,7 @@ using namespace std;
 class Component
 {
 public:
-	virtual void Initialize() = 0;
+	virtual void doInitialize() = 0;
 	virtual void Update() = 0;
 	Component();
 private:
@@ -27,5 +26,6 @@ protected:
 
 Component::Component() {
 }
+
 
 #endif

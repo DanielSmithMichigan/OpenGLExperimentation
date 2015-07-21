@@ -1,12 +1,11 @@
 #include <string>
 #include <GL/glew.h>
-#include "ProgramHandle.h"
 #include "Error.h"
 #include <glm/glm.hpp>
 
 class OGLVariable {
 	public:
-		OGLVariable(std::string name);
+		OGLVariable(std::string name, GLuint programHandle);
 		OGLVariable& operator<<(const glm::mat4 &value);
 		OGLVariable& operator<<(const glm::mat3 &value);
 		OGLVariable& operator<<(const glm::vec4 &value);
@@ -14,11 +13,14 @@ class OGLVariable {
 		OGLVariable& operator<<(float value);
 		std::string name;
 		GLint location;
+	private:
+		GLuint programHandle;
 };
 
-OGLVariable::OGLVariable(std::string name)
-	: name(name) {
-	location = glGetUniformLocation(ProgramHandle::getProgramHandle(), name.c_str());
+OGLVariable::OGLVariable(std::string name, GLuint programHandle)
+	: name(name),
+	programHandle(programHandle) {
+	location = glGetUniformLocation(programHandle, name.c_str());
 	if (location == -1)
 	{
 		Error::showError("Cannot find Uniform", true);
