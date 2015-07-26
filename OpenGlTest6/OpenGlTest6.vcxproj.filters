@@ -29,6 +29,12 @@
     <None Include="componentShader.vert">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="deferredRendering.vert">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="deferredRendering.frag">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -74,6 +80,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OGLVariable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Defer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

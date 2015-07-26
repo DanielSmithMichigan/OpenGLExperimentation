@@ -11,10 +11,11 @@ class DrawableGameComponent : public Component {
 		virtual void Update() = 0;
 		void doDraw(GlobalGameObjects* objects);
 		void doInitialize();
-		DrawableGameComponent();
+		DrawableGameComponent(char* fragShader, char* vertShader);
 	private:
 		virtual void Draw(GlobalGameObjects* objects) = 0;
 		virtual void Initialize() = 0;
+		virtual void InitializeUniforms() = 0;
 		void linkProgram();
 		void loadShaders();
 		void createProgramHandle();
@@ -22,17 +23,23 @@ class DrawableGameComponent : public Component {
 		void endDraw();
 	protected:
 		GLuint programHandle;
+		char* fragShaderName;
+		char* vertShaderName;
 };
 
-DrawableGameComponent::DrawableGameComponent() {
+DrawableGameComponent::DrawableGameComponent(char* vertShaderName = "componentShader.vert", char* fragShaderName = "componentShader.frag")
+: fragShaderName(fragShaderName)
+, vertShaderName(vertShaderName)
+{
 }
 
 void DrawableGameComponent::doInitialize() {
 	createProgramHandle();
-	loadShaders();
-	linkProgram();
 	glUseProgram(programHandle);
 	Initialize();
+	loadShaders();
+	linkProgram();
+	InitializeUniforms();
 	glUseProgram(0);
 }
 
@@ -59,8 +66,8 @@ void DrawableGameComponent::createProgramHandle() {
 }
 
 void DrawableGameComponent::loadShaders() {
-	Shader* vertexShader = new Shader(GL_VERTEX_SHADER, "componentShader.vert", programHandle);
-	Shader* fragmentShader = new Shader(GL_FRAGMENT_SHADER, "componentShader.frag", programHandle);
+	Shader* vertexShader = new Shader(GL_VERTEX_SHADER, vertShaderName, programHandle);
+	Shader* fragmentShader = new Shader(GL_FRAGMENT_SHADER, fragShaderName, programHandle);
 }
 
 void DrawableGameComponent::linkProgram() {

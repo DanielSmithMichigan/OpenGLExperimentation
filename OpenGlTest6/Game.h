@@ -10,6 +10,7 @@
 #include "Error.h"
 #include "Component.h"
 #include "Window.h"
+#include "Defer.h"
 #include <vector>
 using glm::mat3;
 using glm::mat4;
@@ -33,6 +34,7 @@ class Game {
 		void addComponent(Component* component);
 		vector<Component*> components;
 		Window* window;
+		Defer *deferred;
 		Game();
 };
 
@@ -47,16 +49,18 @@ void Game::addComponent(Component* component) {
 void Game::init() {
 	GlobalGameObjects *objects = new GlobalGameObjects(GAME_WIDTH, GAME_HEIGHT);
 	window = new Window(GAME_WIDTH, GAME_HEIGHT, "Ya did it harry", objects);
+	deferred = new Defer(GAME_WIDTH, GAME_HEIGHT);
 	initGlew();
 }
 
 void Game::run() {
 	initializeComponents();
-	window->render(components);
+	window->render(deferred, components);
 	window->destroy();
 }
 
 void Game::initializeComponents() {
+	deferred->doInitialize();
 	for (Component* component : components)
 	{
 		component->doInitialize();

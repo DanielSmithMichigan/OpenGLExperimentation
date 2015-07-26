@@ -89,11 +89,14 @@
     <None Include="Assets\sphere.dae" />
     <None Include="componentShader.frag" />
     <None Include="componentShader.vert" />
+    <None Include="deferredRendering.frag" />
+    <None Include="deferredRendering.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="Defer.h" />
     <ClInclude Include="DrawableGameComponent.h" />
     <ClInclude Include="Error.h" />
     <ClInclude Include="Game.h" />

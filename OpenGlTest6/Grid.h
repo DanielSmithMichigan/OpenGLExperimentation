@@ -6,6 +6,7 @@ class Grid : public DrawableGameComponent {
 public:
 	Grid(int numRows, int widthRow);
 	void Initialize();
+	void InitializeUniforms();
 	void Draw(GlobalGameObjects* objects);
 	void Update();
 private:
@@ -23,9 +24,6 @@ private:
 	OGLVariable* worldMatrixUniform;
 	OGLVariable* viewMatrixUniform;
 	OGLVariable* projectionMatrixUniform;
-	OGLVariable* ambientColorUniform;
-	OGLVariable* lightColorUniform;
-	OGLVariable* lightDirectionUniform;
 	glm::mat4 position = glm::translate(vec3(0.0f, 0.0f, 0.0f));
 	glm::mat4 scale = glm::scale(vec3(1.0f, 1.0f, 1.0f));
 	glm::mat4 rotate = glm::rotate(0.0f, vec3(1.0f, 0.0f, 0.0f));
@@ -116,19 +114,19 @@ void Grid::createBuffers() {
 
 	glBindVertexArray(0);
 
-	viewMatrixUniform = new OGLVariable("ViewMatrix", programHandle);
-	worldMatrixUniform = new OGLVariable("WorldMatrix", programHandle);
-	projectionMatrixUniform = new OGLVariable("ProjectionMatrix", programHandle);
-	ambientColorUniform = new OGLVariable("AmbientColor", programHandle);
-	lightColorUniform = new OGLVariable("LightColor", programHandle);
-	lightDirectionUniform = new OGLVariable("LightDirection", programHandle);
-
 	glGenSamplers(1, &samplerState);
 	glSamplerParameteri(samplerState, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glSamplerParameteri(samplerState, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glSamplerParameteri(samplerState, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glSamplerParameteri(samplerState, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glSamplerParameterf(samplerState, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
+}
+
+
+void Grid::InitializeUniforms() {
+	viewMatrixUniform = new OGLVariable("ViewMatrix", programHandle);
+	worldMatrixUniform = new OGLVariable("WorldMatrix", programHandle);
+	projectionMatrixUniform = new OGLVariable("ProjectionMatrix", programHandle);
 }
 
 void Grid::Update() {
@@ -144,9 +142,6 @@ void Grid::Draw(GlobalGameObjects* objects) {
 	*viewMatrixUniform << objects->camera->getViewMatrix();
 	*projectionMatrixUniform << objects->camera->projectionMatrix;
 	*worldMatrixUniform << worldMatrix;
-	*ambientColorUniform << objects->ambientLight->color;
-	*lightColorUniform << objects->sun->color;
-	*lightDirectionUniform << objects->sun->direction;
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);

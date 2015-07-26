@@ -11,6 +11,7 @@ class OGLVariable {
 		OGLVariable& operator<<(const glm::vec4 &value);
 		OGLVariable& operator<<(const glm::vec3 &value);
 		OGLVariable& operator<<(float value);
+		OGLVariable& operator<<(int value);
 		std::string name;
 		GLint location;
 	private:
@@ -23,6 +24,7 @@ OGLVariable::OGLVariable(std::string name, GLuint programHandle)
 	location = glGetUniformLocation(programHandle, name.c_str());
 	if (location == -1)
 	{
+		cout << name;
 		Error::showError("Cannot find Uniform", true);
 	}
 }
@@ -54,5 +56,11 @@ OGLVariable& OGLVariable::operator<<(const glm::vec3& value)
 OGLVariable& OGLVariable::operator<<(float value)
 {
 	glUniform1f(location, value);
+	return *this;
+}
+
+OGLVariable& OGLVariable::operator<<(int value)
+{
+	glUniform1i(location, value);
 	return *this;
 }

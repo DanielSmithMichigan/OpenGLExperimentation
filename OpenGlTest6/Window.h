@@ -7,6 +7,7 @@
 #include "DrawableGameComponent.h"
 #include "Colors.h"
 #include <vector>
+#include "Defer.h"
 
 using namespace std;
 
@@ -28,7 +29,7 @@ class Window {
 		GlobalGameObjects *objects;
 	public:
 		Window(int width, int height, char* title, GlobalGameObjects *objects);
-		void render(vector<Component*> components);
+		void render(Defer *deferred, vector<Component*> components);
 		void destroy();
 };
 
@@ -57,8 +58,8 @@ void Window::init() {
 		exit(EXIT_FAILURE);
 	}
 
-	this->window = glfwCreateWindow(this->width, this->height, this->title, NULL, NULL);
-	if (!this->window) {
+	window = glfwCreateWindow(this->width, this->height, this->title, NULL, NULL);
+	if (!window) {
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
@@ -78,16 +79,24 @@ void Window::handleMouseMovement() {
 	glfwSetCursorPos(window, 0.0, 0.0);
 }
 
-void Window::render(vector<Component*> components) {
+void Window::render(Defer *deferred, vector<Component*> components) {
 	static const GLfloat one = 1.0f;
+	double lastTime = 0;
+	int numFrames = 0;
+	double currTime = 0;
 
 	while (!glfwWindowShouldClose(window))
 	{
+		numFrames++;
+		if (glfwGetTime() - lastTime > 1.0) {
+			cout << numFrames << endl;
+			numFrames = 0;
+			lastTime += 1.0;
+		}
 		handleKeypress();
 		handleMouseMovement();
 		glViewport(0, 0, this->width, this->height);
-		glClearBufferfv(GL_COLOR, 0, &Colors::Black[0]);
-		glClearBufferfv(GL_DEPTH, 0, &one);
+		deferred->start();
 		for (Component* component : components)
 		{
 			DrawableGameComponent* drawableGameComponent = dynamic_cast<DrawableGameComponent*>(component);
@@ -95,6 +104,8 @@ void Window::render(vector<Component*> components) {
 				drawableGameComponent->doDraw(objects);
 			}
 		}
+		deferred->end();
+		deferred->doDraw(objects);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

@@ -10,6 +10,7 @@ class Mesh : public DrawableGameComponent {
 public:
 	Mesh(aiMesh &mesh);
 	void Initialize();
+	void InitializeUniforms();
 	void Draw(GlobalGameObjects* objects);
 	void Update();
 private:
@@ -27,12 +28,6 @@ private:
 	OGLVariable* worldMatrixUniform;
 	OGLVariable* viewMatrixUniform;
 	OGLVariable* projectionMatrixUniform;
-	OGLVariable* ambientColorUniform;
-	OGLVariable* lightColorUniform;
-	OGLVariable* lightDirectionUniform;
-	OGLVariable* cameraPositionUniform;
-	OGLVariable* specularColorUniform;
-	OGLVariable* specularPowerUniform;
 	glm::mat4 position = glm::translate(vec3(0.0f, 0.0f, 0.0f));
 	glm::mat4 scale = glm::scale(vec3(1.0f, 1.0f, 1.0f));
 	glm::mat4 rotate = glm::rotate(0.0f, vec3(1.0f, 0.0f, 0.0f));
@@ -61,6 +56,12 @@ Mesh::Mesh(aiMesh &mesh) : indexBuffer(0), vertexBuffer(0), vertexArrayObject(0)
 
 void Mesh::Initialize() {
 	createBuffers();
+}
+
+void Mesh::InitializeUniforms() {
+	viewMatrixUniform = new OGLVariable("ViewMatrix", programHandle);
+	worldMatrixUniform = new OGLVariable("WorldMatrix", programHandle);
+	projectionMatrixUniform = new OGLVariable("ProjectionMatrix", programHandle);
 }
 
 void Mesh::createBuffers() {
@@ -101,22 +102,16 @@ void Mesh::createBuffers() {
 
 	glBindVertexArray(0);
 
-	viewMatrixUniform = new OGLVariable("ViewMatrix", programHandle);
-	worldMatrixUniform = new OGLVariable("WorldMatrix", programHandle);
-	projectionMatrixUniform = new OGLVariable("ProjectionMatrix", programHandle);
-	ambientColorUniform = new OGLVariable("AmbientColor", programHandle);
-	lightColorUniform = new OGLVariable("LightColor", programHandle);
-	lightDirectionUniform = new OGLVariable("LightDirection", programHandle);
-	cameraPositionUniform = new OGLVariable("CameraPosition", programHandle);
-	specularColorUniform = new OGLVariable("SpecularColor", programHandle);
-	specularPowerUniform = new OGLVariable("SpecularPower", programHandle);
-
 	glGenSamplers(1, &samplerState);
 	glSamplerParameteri(samplerState, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glSamplerParameteri(samplerState, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glSamplerParameteri(samplerState, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glSamplerParameteri(samplerState, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glSamplerParameterf(samplerState, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
+
+	glBindFragDataLocation(programHandle, 0, "Diffuse");
+	glBindFragDataLocation(programHandle, 1, "Position");
+	glBindFragDataLocation(programHandle, 2, "Normal");
 }
 
 void Mesh::Update() {
@@ -133,12 +128,6 @@ void Mesh::Draw(GlobalGameObjects* objects) {
 	*viewMatrixUniform << objects->camera->getViewMatrix();
 	*projectionMatrixUniform << objects->camera->projectionMatrix;
 	*worldMatrixUniform << worldMatrix;
-	*ambientColorUniform << objects->ambientLight->color;
-	*lightColorUniform << objects->sun->color;
-	*lightDirectionUniform << objects->sun->direction;
-	*cameraPositionUniform << objects->camera->position;
-	*specularColorUniform << objects->sun->color;
-	*specularPowerUniform << specularPower;
 
 	glEnable(GL_DEPTH_TEST);
 
