@@ -108,10 +108,6 @@ void Mesh::createBuffers() {
 	glSamplerParameteri(samplerState, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glSamplerParameteri(samplerState, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glSamplerParameterf(samplerState, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
-
-	glBindFragDataLocation(programHandle, 0, "Diffuse");
-	glBindFragDataLocation(programHandle, 1, "Position");
-	glBindFragDataLocation(programHandle, 2, "Normal");
 }
 
 void Mesh::Update() {

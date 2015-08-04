@@ -44,11 +44,10 @@ void Defer::Initialize()
 {
 
 	glGenFramebuffers(1, &fbo);
-	glGenRenderbuffers(1, &depthBuffer);
 
-	// Bind the depth buffer
-	glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
+	glGenTextures(1, &depthBuffer);
+	glBindTexture(GL_TEXTURE_2D, depthBuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
 	// Generate and bind the texture for diffuse
 	glGenTextures(1, &diffuseTexture);
@@ -62,7 +61,7 @@ void Defer::Initialize()
 	// Generate and bind the texture for positions
 	glGenTextures(1, &positionTexture);
 	glBindTexture(GL_TEXTURE_2D, positionTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -71,7 +70,7 @@ void Defer::Initialize()
 	// Generate and bind the texture for normals
 	glGenTextures(1, &normalsTexture);
 	glBindTexture(GL_TEXTURE_2D, normalsTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT,	NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -79,12 +78,12 @@ void Defer::Initialize()
 
 	// Bind the FBO so that the next operations will be bound to it.
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
 
 	// Attach the texture to the FBO
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, diffuseTexture, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, positionTexture, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, normalsTexture, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthBuffer, 0);
 
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
@@ -127,14 +126,14 @@ void Defer::Update() {
 
 void Defer::Draw(GlobalGameObjects* objects) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, diffuseTexture);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, positionTexture);
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, normalsTexture);
 	
-	*diffuseUniform << 0;
+	*diffuseUniform << 3;
 	*positionUniform << 1;
 	*normalsUniform << 2;
 	*ambientColorUniform << objects->ambientLight->color;

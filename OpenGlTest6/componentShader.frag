@@ -10,12 +10,12 @@ in VS_OUTPUT
 } IN;
 
 out vec4 Diffuse; 
-out vec4 Position;
-out vec4 Normal;
+out vec3 Position;
+out vec3 Normal;
 
 void main()
 {	
 	Diffuse = vec4(texture(ColorTextureSampler, IN.TextureCoordinate).rgb, 0);
-	Position = vec4(IN.WorldPosition.xyz,0);
-	Normal = vec4(IN.Normal.xyz,0);
+	Position = vec3(IN.WorldPosition.xyz);
+	Normal = vec3(IN.Normal.xyz);
 }
