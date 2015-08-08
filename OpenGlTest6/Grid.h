@@ -143,7 +143,6 @@ void Grid::Draw(GlobalGameObjects* objects) {
 	*projectionMatrixUniform << objects->camera->projectionMatrix;
 	*worldMatrixUniform << worldMatrix;
 
-	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
 
