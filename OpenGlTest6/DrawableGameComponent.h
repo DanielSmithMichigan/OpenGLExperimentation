@@ -35,10 +35,10 @@ DrawableGameComponent::DrawableGameComponent(char* vertShaderName = "componentSh
 
 void DrawableGameComponent::doInitialize() {
 	createProgramHandle();
-	glUseProgram(programHandle);
 	Initialize();
 	loadShaders();
 	linkProgram();
+	glUseProgram(programHandle);
 	InitializeUniforms();
 	glUseProgram(0);
 }
